@@ -1,11 +1,16 @@
 package br.app.portela.screenmatch;
 
+import br.app.portela.screenmatch.model.DadosEpisodio;
 import br.app.portela.screenmatch.model.DadosSerie;
+import br.app.portela.screenmatch.model.DadosTemporada;
 import br.app.portela.screenmatch.service.ConsumoApi;
 import br.app.portela.screenmatch.service.ConverteDados;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class ScreenmatchApplication implements CommandLineRunner {
@@ -22,7 +27,18 @@ public class ScreenmatchApplication implements CommandLineRunner {
 		ConverteDados conversor = new ConverteDados();
 		DadosSerie serie = conversor.obterDados(json, DadosSerie.class);
 		System.out.println(serie);
+		json = consumoApi.obterDados("https://www.omdbapi.com/?apikey=92a14529&t=the+walking+dead&season=2&episode=5");
+		DadosEpisodio episodio = conversor.obterDados(json, DadosEpisodio.class);
+		System.out.println(episodio);
 
+		List<DadosTemporada> temporadas = new ArrayList<>();
+		for (int i = 1; i <= serie.totalTemporadas(); i++) {
+			json = consumoApi.obterDados("https://www.omdbapi.com/?apikey=92a14529&t=the+walking+dead&season=" + i);
+			DadosTemporada temporada = conversor.obterDados(json, DadosTemporada.class);
+			temporadas.add(temporada);
+		}
+
+		temporadas.forEach(System.out::println);
 
 	}
 
