@@ -3,9 +3,13 @@ package br.app.portela.screenmatch.principal;
 import br.app.portela.screenmatch.model.DadosEpisodio;
 import br.app.portela.screenmatch.model.DadosSerie;
 import br.app.portela.screenmatch.model.DadosTemporada;
+import br.app.portela.screenmatch.model.Episodio;
 import br.app.portela.screenmatch.service.ConsumoApi;
 import br.app.portela.screenmatch.service.ConverteDados;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -35,7 +39,7 @@ public class Principal {
 
         temporadas.forEach(System.out::println);
 
-       // temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
+        // temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
 
         List<DadosEpisodio> dadosEpisodios = temporadas.stream()
                 .flatMap(t -> t.episodios().stream())
@@ -47,5 +51,24 @@ public class Principal {
                 .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
                 .limit(5)
                 .forEach(System.out::println);
+
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream()
+                        .map(d -> new Episodio(t.temporada(), d))
+                )
+                .collect(Collectors.toList());
+
+        System.out.println("A partir de que ano quer fazer a busca?");
+        int ano = scanner.nextInt();
+        scanner.nextLine();
+
+        episodios = episodios.stream()
+                .filter(e -> e.getDataDeLancamento() != null && e.getDataDeLancamento().isAfter(LocalDate.of(ano, 1, 1)))
+                .collect(Collectors.toList());
+
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        System.out.println("\nEpisódios lançados a partir de " + ano);
+        episodios.forEach(e -> System.out.println(e.getDataDeLancamento().format(formatador) + " - " + e.getNomeEpisodio()));
+
     }
 }
