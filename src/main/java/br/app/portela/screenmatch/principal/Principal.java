@@ -88,5 +88,14 @@ public class Principal {
         System.out.println("\nAvaliações por temporada:");
         avaliacoesPorTemporada.forEach((temporada, avaliacao) -> System.out.println("Temporada " + temporada + ": " + avaliacao));
 
+        DoubleSummaryStatistics estatisticas = episodios.stream()
+                .filter(e -> e.getAvaliacao() > 0.0)
+                        .collect(Collectors.summarizingDouble(Episodio::getAvaliacao));
+
+        System.out.println("\nEstatísticas das avaliações:");
+        System.out.println("Média: " + estatisticas.getAverage());
+        System.out.println("Mínimo: " + estatisticas.getMin());
+        System.out.println("Máximo: " + estatisticas.getMax());
+        System.out.println("Total: " + estatisticas.getCount());
     }
 }
