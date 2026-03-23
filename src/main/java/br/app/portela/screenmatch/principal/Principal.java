@@ -10,10 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
@@ -58,17 +55,38 @@ public class Principal {
                 )
                 .collect(Collectors.toList());
 
-        System.out.println("A partir de que ano quer fazer a busca?");
-        int ano = scanner.nextInt();
-        scanner.nextLine();
+//        System.out.println("Digite o trecho do episodio: ");
+//        String trecho = scanner.nextLine();
+//
+//        Optional<Episodio> episodioEncontrado = episodios.stream()
+//                .filter(e -> e.getNomeEpisodio().toLowerCase().contains(trecho.toLowerCase()))
+//                .findFirst();
+//
+//        if (episodioEncontrado.isPresent()) {
+//            System.out.println("Episodio encontrado\n: " + "Temporada " + episodioEncontrado.get().getNumeroTemporada() + ", Episódio " + episodioEncontrado.get().getNomeEpisodio());
+//        } else {
+//            System.out.println("Episódio não encontrado.");
+//        }
 
-        episodios = episodios.stream()
-                .filter(e -> e.getDataDeLancamento() != null && e.getDataDeLancamento().isAfter(LocalDate.of(ano, 1, 1)))
-                .collect(Collectors.toList());
+//        System.out.println("A partir de que ano quer fazer a busca?");
+//        int ano = scanner.nextInt();
+//        scanner.nextLine();
+//
+//        episodios = episodios.stream()
+//                .filter(e -> e.getDataDeLancamento() != null && e.getDataDeLancamento().isAfter(LocalDate.of(ano, 1, 1)))
+//                .collect(Collectors.toList());
+//
+//        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//        System.out.println("\nEpisódios lançados a partir de " + ano);
+//        episodios.forEach(e -> System.out.println(e.getDataDeLancamento().format(formatador) + " - " + e.getNomeEpisodio()));
 
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        System.out.println("\nEpisódios lançados a partir de " + ano);
-        episodios.forEach(e -> System.out.println(e.getDataDeLancamento().format(formatador) + " - " + e.getNomeEpisodio()));
+        Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
+                .filter(e -> e.getAvaliacao() != 0.0)
+                .collect(Collectors.groupingBy(Episodio::getNumeroTemporada,
+                            Collectors.averagingDouble(Episodio::getAvaliacao)));
+
+        System.out.println("\nAvaliações por temporada:");
+        avaliacoesPorTemporada.forEach((temporada, avaliacao) -> System.out.println("Temporada " + temporada + ": " + avaliacao));
 
     }
 }
