@@ -2,10 +2,12 @@ package br.app.portela.screenmatch.principal;
 
 import br.app.portela.screenmatch.model.DadosSerie;
 import br.app.portela.screenmatch.model.DadosTemporada;
+import br.app.portela.screenmatch.model.Serie;
 import br.app.portela.screenmatch.service.ConsumoApi;
 import br.app.portela.screenmatch.service.ConverteDados;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,41 +17,52 @@ public class Principal {
     private final String API = "92a14529&t=";
     ConsumoApi consumoApi = new ConsumoApi();
     ConverteDados conversor = new ConverteDados();
+    List<DadosSerie> dadosSeries = new ArrayList<>();
 
     public void exibeMenu() {
-        var menu = """
-                --------------------------------
-                Bem-vindo ao ScreenMatch!
-                --------------------------------
-                Escolha o número da opção:
-                1 - Buscar séries
-                2 - Buscar episódios
-                
-                0 - Sair     
-                --------------------------------                                            
-                """;
+        var opcao = -1;
+        while (opcao != 0) {
+            var menu = """
+                    --------------------------------
+                    Bem-vindo ao ScreenMatch!
+                    --------------------------------
+                    Escolha o número da opção:
+                    1 - Buscar séries
+                    2 - Buscar episódios
+                    3 - Exibir séries buscadas
+                    
+                    0 - Sair     
+                    --------------------------------                                            
+                    """;
 
-        System.out.println(menu);
-        var opcao = scanner.nextInt();
-        scanner.nextLine();
+            System.out.println(menu);
+            opcao = scanner.nextInt();
+            scanner.nextLine();
 
-        switch (opcao) {
-            case 1:
-                buscarSerieWeb();
-                break;
-            case 2:
-                buscarEpisodioPorSerie();
-                break;
-            case 0:
-                System.out.println("Saindo...");
-                break;
-            default:
-                System.out.println("Opção inválida");
+            switch (opcao) {
+                case 1:
+                    buscarSerieWeb();
+                    break;
+                case 2:
+                    buscarEpisodioPorSerie();
+                    break;
+                    case 3:
+                        exibirSeriesBuscadas();
+                        break;
+                case 0:
+                    System.out.println("Saindo...");
+                    break;
+                default:
+                    System.out.println("Opção inválida");
+
+            }
         }
     }
+
     private void buscarSerieWeb(){
         DadosSerie dados = getDadosSerie();
         System.out.println(dados);
+        dadosSeries.add(dados);
     }
 
     private DadosSerie getDadosSerie(){
@@ -68,6 +81,17 @@ public class Principal {
             temporadas.add(temporada);
         }
         temporadas.forEach(System.out::println);
+    }
+
+    private void exibirSeriesBuscadas(){
+        List<Serie> series = new ArrayList<>();
+        series = dadosSeries.stream()
+                .map(d -> new Serie(d))
+                .toList();
+
+        series.stream()
+                .sorted(Comparator.comparing(Serie::getGenero))
+                .forEach(System.out::println);
     }
 
         /* temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
