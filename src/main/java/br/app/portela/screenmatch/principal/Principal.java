@@ -3,6 +3,7 @@ package br.app.portela.screenmatch.principal;
 import br.app.portela.screenmatch.model.DadosSerie;
 import br.app.portela.screenmatch.model.DadosTemporada;
 import br.app.portela.screenmatch.model.Serie;
+import br.app.portela.screenmatch.repository.SerieRepository;
 import br.app.portela.screenmatch.service.ConsumoApi;
 import br.app.portela.screenmatch.service.ConverteDados;
 
@@ -14,10 +15,15 @@ import java.util.Scanner;
 public class Principal {
     Scanner scanner = new Scanner(System.in);
     private final String ENDERECO = "https://www.omdbapi.com/?apikey=";
-    private final String API = "92a14529&t=";
+    private final String API = System.getenv("APIKEY_OMDB");
     ConsumoApi consumoApi = new ConsumoApi();
     ConverteDados conversor = new ConverteDados();
     List<DadosSerie> dadosSeries = new ArrayList<>();
+    private final SerieRepository repositorio;
+
+    public Principal(SerieRepository repositorio){
+        this.repositorio = repositorio;
+    }
 
     public void exibeMenu() {
         var opcao = -1;
@@ -61,8 +67,10 @@ public class Principal {
 
     private void buscarSerieWeb(){
         DadosSerie dados = getDadosSerie();
+        Serie serie = new Serie(dados);
+        repositorio.save(serie);
         System.out.println(dados);
-        dadosSeries.add(dados);
+       // dadosSeries.add(dados);
     }
 
     private DadosSerie getDadosSerie(){
@@ -84,11 +92,7 @@ public class Principal {
     }
 
     private void exibirSeriesBuscadas(){
-        List<Serie> series = new ArrayList<>();
-        series = dadosSeries.stream()
-                .map(d -> new Serie(d))
-                .toList();
-
+        List<Serie> series = repositorio.findAll();
         series.stream()
                 .sorted(Comparator.comparing(Serie::getGenero))
                 .forEach(System.out::println);
