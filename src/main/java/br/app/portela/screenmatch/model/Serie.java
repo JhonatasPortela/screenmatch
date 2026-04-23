@@ -1,16 +1,18 @@
 package br.app.portela.screenmatch.model;
 
-import jakarta.persistence.*;
-
+import java.util.List;
 import java.util.OptionalDouble;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "series")
+
 public class Serie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column (unique = true)
+    @Column(unique = true)
     private String titulo;
     private Integer totalTemporadas;
     private Double avaliacao;
@@ -19,8 +21,11 @@ public class Serie {
     private String atores;
     private String poster;
     private String sinopse;
+    @OneToMany(mappedBy = "serie", cascade= CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Episodio> episodios;
 
-    public Serie() {}
+    public Serie() {
+    }
 
     public Serie(DadosSerie dadosSerie) {
         this.titulo = dadosSerie.titulo();
@@ -96,17 +101,30 @@ public class Serie {
         this.sinopse = sinopse;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Episodio> getEpisodios() {
+        return episodios;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        episodios.stream()
+                .forEach(e -> e.setSerie(this));
+        this.episodios = episodios;
+    }
+
     @Override
     public String toString() {
-        return
-                "genero=" + genero +
+        return "genero=" + genero +
                 ", titulo='" + titulo + '\'' +
                 ", totalTemporadas=" + totalTemporadas +
                 ", avaliacao=" + avaliacao +
                 ", atores='" + atores + '\'' +
                 ", poster='" + poster + '\'' +
-                ", sinopse='" + sinopse + '\''
-                ;
+                ", sinopse='" + sinopse + '\'' +
+                ", episódios='" + episodios + '\'';
 
     }
 }

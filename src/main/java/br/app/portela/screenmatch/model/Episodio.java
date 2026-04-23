@@ -3,14 +3,32 @@ package br.app.portela.screenmatch.model;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "episodios")
 public class Episodio {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer numeroTemporada;
     private String nomeEpisodio;
     private Double avaliacao;
     private LocalDate dataDeLancamento;
     private Integer numeroEpisodio;
+    @ManyToOne
+    @JoinColumn(name = "serie_id")
+    private Serie serie;
 
 
+    public Episodio() {}
+    
     public Episodio(Integer numeroTemporada, DadosEpisodio dadosEpisodio) {
         this.numeroTemporada = numeroTemporada;
         this.nomeEpisodio = dadosEpisodio.titulo();
@@ -26,6 +44,8 @@ public class Episodio {
             this.dataDeLancamento = null;
         }
     }
+
+    
 
     public Double getAvaliacao() {
         return avaliacao;
@@ -65,6 +85,29 @@ public class Episodio {
 
     public void setNumeroTemporada(Integer numeroTemporada) {
         this.numeroTemporada = numeroTemporada;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
     }
 
     @Override
