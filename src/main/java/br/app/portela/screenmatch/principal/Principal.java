@@ -7,10 +7,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import br.app.portela.screenmatch.model.DadosSerie;
-import br.app.portela.screenmatch.model.DadosTemporada;
-import br.app.portela.screenmatch.model.Episodio;
-import br.app.portela.screenmatch.model.Serie;
+import br.app.portela.screenmatch.model.*;
 import br.app.portela.screenmatch.repository.SerieRepository;
 import br.app.portela.screenmatch.service.ConsumoApi;
 import br.app.portela.screenmatch.service.ConverteDados;
@@ -43,6 +40,8 @@ public class Principal {
                     4 - Buscar série por nome
                     5 - Buscar séries por ator
                     6 - Buscar Top 5 séries
+                    7 - Buscar série por categoria
+                    8 - Buscar séries por quantidade de temporada e avaliações
 
                     0 - Sair
                     --------------------------------
@@ -71,6 +70,12 @@ public class Principal {
                 case 6:
                     buscarTop5Series();
                     break;
+                case 7:
+                    buscarSeriePorCategoria();
+                    break;
+                case 8:
+                    buscarSeriesPorTemporadasEAvaliacao();
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -80,9 +85,6 @@ public class Principal {
             }
         }
     }
-
-
-
 
     private void buscarSerieWeb() {
         DadosSerie dados = getDadosSerie();
@@ -166,6 +168,28 @@ public class Principal {
 
         topSeries.stream()
                 .forEach(s -> System.out.println(s.getTitulo() + " Avaliação: " + s.getAvaliacao()));
+    }
+
+    private void buscarSeriePorCategoria() {
+        System.out.println("Quer buscar por qual gênero/categoria?");
+        var nomeCategoria = scanner.nextLine().trim();
+        Categoria categoria = Categoria.fromPortugues(nomeCategoria);
+        List<Serie> seriesPorCategoria = repositorio.findByGenero(categoria);
+        seriesPorCategoria.stream()
+                .forEach(System.out::println);
+    }
+
+    private void buscarSeriesPorTemporadasEAvaliacao() {
+        System.out.println("Quer séries com até quantas temporadas?");
+        var maximoTemporadas = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Qual o mínimo de avaliação a série deve ter?");
+        var avaliacaoMinima = scanner.nextDouble();
+        scanner.nextLine();
+        System.out.println("******* Séies filtradas *********");
+        List<Serie> seriesFiltradas = repositorio.findByTotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqual(maximoTemporadas, avaliacaoMinima);
+        seriesFiltradas.stream()
+                .forEach(System.out::println);
     }
 
     /*

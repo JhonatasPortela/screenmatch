@@ -1,5 +1,6 @@
 package br.app.portela.screenmatch.repository;
 
+import br.app.portela.screenmatch.model.Categoria;
 import br.app.portela.screenmatch.model.Serie;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,4 +14,8 @@ public interface SerieRepository extends JpaRepository<Serie, Long> {
     List<Serie> findByAtoresContainingIgnoreCaseAndAvaliacaoGreaterThanEqual(String trim, double avaliacao);
 
     List<Serie> findTop5ByOrderByAvaliacaoDesc();
+
+    List<Serie> findByGenero(Categoria categoria);
+
+    List<Serie> findByTotalTemporadasLessThanEqualAndAvaliacaoGreaterThanEqual(int maximoTemporadas, double avaliacaoMinima);
 }
