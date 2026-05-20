@@ -14,7 +14,6 @@ public enum Categoria {
     private final String categoriaOmdb;
     private final String categoriaEmPortugues;
 
-
     Categoria(String categoriaOmdb, String categoriaEmPortugues) {
         this.categoriaOmdb = categoriaOmdb;
         this.categoriaEmPortugues = categoriaEmPortugues;
