@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Cursor handoff (contexto local entre agentes) ###
+.cursor/handoff/current.md
+.cursor/handoff/archive/*
+!.cursor/handoff/archive/.gitkeep

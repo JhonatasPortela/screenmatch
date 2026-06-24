@@ -17,14 +17,15 @@ public class Principal {
     private final String ENDERECO = "https://www.omdbapi.com/?apikey=";
     private final String API = System.getenv("APIKEY_OMDB");
     ConsumoApi consumoApi = new ConsumoApi();
-    ConverteDados conversor = new ConverteDados();
+    private final ConverteDados conversor;
     List<DadosSerie> dadosSeries = new ArrayList<>();
     private final SerieRepository repositorio;
     private List<Serie> series = new ArrayList<>();
     private Optional<Serie> serieBuscada;
 
-    public Principal(SerieRepository repositorio) {
+    public Principal(SerieRepository repositorio, ConverteDados conversor) {
         this.repositorio = repositorio;
+        this.conversor = conversor;
     }
 
     public void exibeMenu() {
