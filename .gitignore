@@ -32,6 +32,11 @@ build/
 ### VS Code ###
 .vscode/
 
+### Variáveis de ambiente (nunca commitar) ###
+.env
+.env.local
+.env.*.local
+
 ### Cursor handoff (contexto local entre agentes) ###
 .cursor/handoff/current.md
 .cursor/handoff/archive/*
