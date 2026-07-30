@@ -1,4 +1,4 @@
 package br.app.portela.screenmatch.dto;
 
-public record EpisodioDto() {
+public record EpisodioDto(Integer temporada, String titulo, Integer numeroEpisodio) {
 }
